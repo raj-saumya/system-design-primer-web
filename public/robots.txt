@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://system-design-primer.example.com/sitemap-index.xml
+Sitemap: https://system-design-primer-web.pages.dev/sitemap-index.xml

@@ -4,7 +4,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://system-design-primer.example.com",
+  site: "https://system-design-primer-web.pages.dev",
   trailingSlash: "always",
   integrations: [
     svelte(),
