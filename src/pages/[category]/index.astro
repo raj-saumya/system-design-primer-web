@@ -1,0 +1,83 @@
+---
+import Base from "../../layouts/Base.astro";
+import TopicSearch from "../../components/TopicSearch.svelte";
+import {
+    groupedByCategory,
+    categoryLabel,
+    toSearchItem,
+    cardUrl,
+    breadcrumbLd,
+} from "../../lib/cards";
+
+export const getStaticPaths = async () => {
+    const groups = await groupedByCategory();
+    return groups.map((group) => ({
+        params: { category: group.category },
+        props: { group },
+    }));
+};
+
+const { group } = Astro.props;
+const searchItems = group.cards.map(toSearchItem);
+
+const description =
+    `${group.cards.length} articles on ${group.title}. Search or filter by ` +
+    `topic to start reading.`;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const toAbsolute = (path: string) => new URL(path, Astro.site).href;
+
+const jsonLd = [
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: group.title,
+        description,
+        url: pageUrl,
+        inLanguage: "en",
+        isPartOf: {
+            "@type": "WebSite",
+            name: "System Design Primer",
+            url: Astro.site?.href,
+        },
+        mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: group.cards.length,
+            itemListElement: group.cards.map((card, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: card.data.title,
+                url: toAbsolute(cardUrl(card)),
+            })),
+        },
+    },
+    breadcrumbLd([
+        { name: "Home", url: toAbsolute("/") },
+        { name: group.title, url: pageUrl },
+    ]),
+];
+---
+
+<Base
+    title={group.title}
+    description={description}
+    ogType="website"
+    jsonLd={jsonLd}
+>
+    <header style="margin-bottom:1rem;">
+        <p class="breadcrumb">
+            <a href="/">Home</a> &nbsp;/&nbsp; {group.title}
+        </p>
+        <p class="eyebrow">
+            {categoryLabel(group.category)} · {group.cards.length} Articles
+        </p>
+        <h1>{group.title}</h1>
+        <p class="lead">{description}</p>
+    </header>
+
+    <TopicSearch
+        client:load
+        items={searchItems}
+        placeholder={`Search ${group.title}…`}
+    />
+</Base>

@@ -1,0 +1,73 @@
+---
+const patternId = `logo-hatch-${Math.floor(Math.random() * 1e6).toString(36)}`;
+const plateCenters = [24, 17, 10];
+---
+
+<a class="brand" href="/" aria-label="Primer home">
+    <svg class="logo-mark" viewBox="0 0 34 36" role="img" aria-hidden="true">
+        <defs>
+            <pattern
+                id={patternId}
+                width="3"
+                height="3"
+                patternUnits="userSpaceOnUse"
+            >
+                <line
+                    x1="0"
+                    y1="0"
+                    x2="3"
+                    y2="0"
+                    stroke="currentColor"
+                    stroke-width="1.1"></line>
+            </pattern>
+        </defs>
+        {
+            plateCenters.map((centerY, index) => (
+                <g>
+                    {index < plateCenters.length - 1 && (
+                        <path
+                            d={`M3 ${centerY} L3 ${centerY - 7} M31 ${centerY} L31 ${centerY - 7}`}
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            fill="none"
+                        />
+                    )}
+                    <polygon
+                        points={`17 ${centerY - 5.5} 31 ${centerY} 17 ${centerY + 5.5} 3 ${centerY}`}
+                        fill={index === 0 ? `url(#${patternId})` : "none"}
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linejoin="round"
+                    />
+                </g>
+            ))
+        }
+    </svg>
+    <span class="brand-word">Primer<span class="dot">.</span></span>
+</a>
+
+<style>
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .brand .logo-mark {
+        width: 30px;
+        height: 32px;
+        flex: none;
+    }
+    .brand-word {
+        font-weight: 800;
+        font-size: 1.5rem;
+        letter-spacing: -0.01em;
+        line-height: 1;
+    }
+    .brand .dot {
+        color: var(--muted);
+    }
+    .brand:hover .logo-mark {
+        transform: translateY(-1px) rotate(-3deg);
+        transition: transform 0.2s ease;
+    }
+</style>

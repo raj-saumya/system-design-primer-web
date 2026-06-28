@@ -1,0 +1,6 @@
+# Before deploying, change the Sitemap URL below to your real domain
+# (it must match `site:` in astro.config.mjs).
+User-agent: *
+Allow: /
+
+Sitemap: https://system-design-primer.example.com/sitemap-index.xml

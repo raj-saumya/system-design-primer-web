@@ -1,0 +1,28 @@
+{
+  "name": "system-design-primer",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "A web reading edition of the System Design Primer.",
+  "keywords": [
+    "system-design",
+    "system-design-primer",
+    "astro",
+    "svelte",
+    "interview-prep",
+    "scalability"
+  ],
+  "license": "CC-BY-4.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.0",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/svelte": "^9.0.0",
+    "astro": "^7.0.3",
+    "svelte": "^5.56.4"
+  }
+}

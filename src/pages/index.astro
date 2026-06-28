@@ -1,0 +1,85 @@
+---
+import Base from "../layouts/Base.astro";
+import TopicSearch from "../components/TopicSearch.svelte";
+import { allCards, toSearchItem } from "../lib/cards";
+
+const searchItems = (await allCards()).map(toSearchItem);
+
+const description =
+    "The Donne Martin System Design Primer in a clean web version. Read large-scale " +
+    "system design topics quickly: scalability, databases, caching, networking, and more.";
+
+const siteUrl = Astro.site?.href ?? "/";
+
+const jsonLd = [
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "System Design Primer",
+        alternateName: "Primer",
+        description,
+        url: siteUrl,
+        inLanguage: "en",
+        license: "https://creativecommons.org/licenses/by/4.0/",
+        potentialAction: {
+            "@type": "SearchAction",
+            target: {
+                "@type": "EntryPoint",
+                urlTemplate: `${siteUrl}?q={search_term_string}`,
+            },
+            "query-input": "required name=search_term_string",
+        },
+    },
+];
+---
+
+<Base title="Primer" description={description} ogType="website" jsonLd={jsonLd}>
+    <section class="hero">
+        <h1 class="display-sans">
+            The System Design Primer, made for quick reading.
+        </h1>
+        <p class="lead">
+            A clean, fast-reading web edition of{" "}
+            <a
+                href="https://github.com/donnemartin/system-design-primer"
+                rel="noopener noreferrer"
+                >the System Design Primer by Donne Martin</a
+            >. Search a topic or filter by tag to begin.
+        </p>
+    </section>
+
+    <section class="browse">
+        <TopicSearch
+            client:load
+            items={searchItems}
+            placeholder="Search topics"
+        />
+    </section>
+
+    <style>
+        .display-sans {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.04;
+            font-size: clamp(2.4rem, 6vw, 4rem);
+        }
+        .hero {
+            margin: 1.5rem 0 2rem;
+        }
+        .hero .lead {
+            margin-top: 1rem;
+        }
+        .hero .lead a {
+            color: var(--text);
+            box-shadow: inset 0 -1px 0 var(--line-strong);
+        }
+        .hero .lead a:hover {
+            background: var(--text);
+            color: var(--bg);
+            box-shadow: none;
+        }
+        .browse {
+            margin-top: 1.5rem;
+        }
+    </style>
+</Base>

@@ -1,0 +1,17 @@
+{
+  "scalability": {
+    "title": "Scalability & Core Concepts",
+    "order": 1,
+    "desc": "Fundamental building blocks of large-scale systems: performance, availability, databases, caching, networking and communication."
+  },
+  "exercises": {
+    "title": "System Design Exercises",
+    "order": 2,
+    "desc": "Full walkthroughs of classic system design interview questions, from requirements to scaled architecture."
+  },
+  "object-oriented-design": {
+    "title": "Object-Oriented Design",
+    "order": 3,
+    "desc": "Object-oriented design interview problems with class structures and working solutions."
+  }
+}

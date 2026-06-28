@@ -1,0 +1,228 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import ReadingProgress from "../../components/ReadingProgress.svelte";
+import {
+    allCards,
+    cardSlug,
+    cardUrl,
+    categoryLabel,
+    readingTime,
+    breadcrumbLd,
+} from "../../lib/cards";
+
+export const getStaticPaths = async () => {
+    const cards = await allCards();
+    return cards.map((card) => {
+        const categoryCards = cards.filter(
+            (other) => other.data.category === card.data.category,
+        );
+        const index = categoryCards.indexOf(card);
+        return {
+            params: { category: card.data.category, slug: cardSlug(card) },
+            props: {
+                card,
+                previous: categoryCards[index - 1] ?? null,
+                next: categoryCards[index + 1] ?? null,
+            },
+        };
+    });
+};
+
+const { card, previous, next } = Astro.props;
+const { Content } = await render(card);
+const minutes = readingTime(card);
+
+const description = `${card.data.title}. A System Design Primer topic on ${card.data.categoryTitle}.`;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const toAbsolute = (path: string) => new URL(path, Astro.site).href;
+
+const jsonLd = [
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: card.data.title,
+        description,
+        articleSection: card.data.categoryTitle,
+        keywords: card.data.tags.join(", "),
+        url: pageUrl,
+        mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+        inLanguage: "en",
+        isAccessibleForFree: true,
+        author: {
+            "@type": "Person",
+            name: "Donne Martin",
+            url: "https://github.com/donnemartin",
+        },
+        publisher: {
+            "@type": "Organization",
+            name: "System Design Primer",
+            url: Astro.site?.href,
+        },
+        license: "https://creativecommons.org/licenses/by/4.0/",
+        isBasedOn: "https://github.com/donnemartin/system-design-primer",
+    },
+    breadcrumbLd([
+        { name: "Home", url: toAbsolute("/") },
+        {
+            name: card.data.categoryTitle,
+            url: toAbsolute(`/${card.data.category}/`),
+        },
+        { name: card.data.title, url: pageUrl },
+    ]),
+];
+---
+
+<Base
+    title={card.data.title}
+    description={description}
+    ogType="article"
+    jsonLd={jsonLd}
+>
+    <Fragment slot="head">
+        <meta property="article:section" content={card.data.categoryTitle} />
+        {
+            card.data.tags.map((tag) => (
+                <meta property="article:tag" content={tag} />
+            ))
+        }
+    </Fragment>
+    <ReadingProgress client:load />
+
+    <header style="margin-bottom:2.4rem;">
+        <p class="breadcrumb">
+            <a href="/">Home</a> &nbsp;/&nbsp;
+            <a href={`/${card.data.category}/`}>{card.data.categoryTitle}</a>
+        </p>
+        <p class="eyebrow">{categoryLabel(card.data.category)}</p>
+        <h1>{card.data.title}</h1>
+        <div class="byline">
+            <span class="avatar">SD</span>
+            <span><b>System Design Primer</b> in {card.data.categoryTitle}</span
+            >
+            <span class="sep">·</span>
+            <span>{minutes} min read</span>
+        </div>
+    </header>
+
+    <article class="prose">
+        <Content />
+    </article>
+
+    {
+        card.data.tags.length > 0 && (
+            <div class="article-tags">
+                {card.data.tags.map((tag) => (
+                    <a class="chip" href={`/${card.data.category}/`}>
+                        {tag}
+                    </a>
+                ))}
+            </div>
+        )
+    }
+
+    <nav class="pager">
+        {
+            previous ? (
+                <a href={cardUrl(previous)}>
+                    <span class="label">← Previous</span>
+                    <span class="t">{previous.data.title}</span>
+                </a>
+            ) : (
+                <span />
+            )
+        }
+        {
+            next ? (
+                <a class="next" href={cardUrl(next)}>
+                    <span class="label">Next →</span>
+                    <span class="t">{next.data.title}</span>
+                </a>
+            ) : (
+                <span />
+            )
+        }
+    </nav>
+
+    <p style="margin-top:2rem;">
+        <a class="btn" href={`/${card.data.category}/`}
+            >← All {card.data.categoryTitle}</a
+        >
+    </p>
+</Base>
+
+<style>
+    .byline {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin: 0.4rem 0 1.6rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+    .byline .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--text);
+        color: var(--bg);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+    .byline b {
+        color: var(--text);
+        font-weight: 600;
+    }
+    .byline .sep {
+        color: var(--faint);
+    }
+    .article-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 2.2rem;
+    }
+    .pager {
+        display: flex;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-top: 3rem;
+        border-top: 1px solid var(--line);
+        padding-top: 1.4rem;
+    }
+    .pager a {
+        max-width: 45%;
+    }
+    .pager .label {
+        display: block;
+    }
+    .pager .t {
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
+    .pager a:hover .t {
+        box-shadow: inset 0 -2px 0 var(--text);
+    }
+    .pager .next {
+        text-align: right;
+        margin-left: auto;
+    }
+    .btn {
+        display: inline-block;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.7rem 1.3rem;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--line);
+    }
+    .btn:hover {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+    }
+</style>

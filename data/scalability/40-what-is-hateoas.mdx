@@ -1,0 +1,43 @@
+---
+title: "What is HATEOAS?"
+category: "scalability"
+categoryTitle: "Scalability & Core Concepts"
+deck: "System Design"
+order: 40
+source: "apkg"
+tags: ["API"]
+---
+## What is HATEOAS and why is it important for my REST API?
+
+HATEOAS stands for **Hypertext As The Engine Of Application State**. It means that hypertext should be used to find your way through the API. An example:
+
+```
+GET /account/12345 HTTP/1.1
+
+HTTP/1.1 200 OK
+<?xml version="1.0"?>
+<account>
+    <account_number>12345</account_number>
+    <balance currency="usd">100.00</balance>
+    <link rel="deposit" href="/account/12345/deposit" />
+    <link rel="withdraw" href="/account/12345/withdraw" />
+    <link rel="transfer" href="/account/12345/transfer" />
+    <link rel="close" href="/account/12345/close" />
+</account>
+```
+
+Apart from the fact that we have 100 dollars (US) in our account, we can see 4 options: deposit more money, withdraw money, transfer money to another account, or close our account. The "link"-tags allows us to find out the URLs that are needed for the specified actions. Now, let's suppose we didn't have 100 usd in the bank, but we actually are in the red:
+
+```
+GET /account/12345 HTTP/1.1
+
+HTTP/1.1 200 OK
+<?xml version="1.0"?>
+<account>
+    <account_number>12345</account_number>
+    <balance currency="usd">-25.00</balance>
+    <link rel="deposit" href="/account/12345/deposit" />
+</account>
+```
+
+Now we are 25 dollars in the red. Do you see that right now we have lost many of our options, and only depositing money is valid? As long as we are in the red, we cannot close our account, nor transfer or withdraw any money from the account. The hypertext is actually telling us what is allowed and what not: HATEOAS

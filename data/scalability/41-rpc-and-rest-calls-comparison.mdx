@@ -1,0 +1,49 @@
+---
+title: "RPC and REST calls comparison"
+category: "scalability"
+categoryTitle: "Scalability & Core Concepts"
+deck: "System Design"
+order: 41
+source: "readme"
+tags: ["API", "Networking"]
+---
+| Operation | RPC | REST |
+|---|---|---|
+| Signup    | **POST** /signup | **POST** /persons |
+| Resign    | **POST** /resign
+\{
+"personid": "1234"
+\} | **DELETE** /persons/1234 |
+| Read a person | **GET** /readPerson?personid=1234 | **GET** /persons/1234 |
+| Read a person’s items list | **GET** /readUsersItemsList?personid=1234 | **GET** /persons/1234/items |
+| Add an item to a person’s items | **POST** /addItemToUsersItemsList
+\{
+"personid": "1234";
+"itemid": "456"
+\} | **POST** /persons/1234/items
+\{
+"itemid": "456"
+\} |
+| Update an item    | **POST** /modifyItem
+\{
+"itemid": "456";
+"key": "value"
+\} | **PUT** /items/456
+\{
+"key": "value"
+\} |
+| Delete an item | **POST** /removeItem
+\{
+"itemid": "456"
+\} | **DELETE** /items/456 |
+
+#### Source(s) and further reading: REST and RPC
+
+* [Do you really know why you prefer REST over RPC](https://apihandyman.io/do-you-really-know-why-you-prefer-rest-over-rpc/)
+* [When are RPC-ish approaches more appropriate than REST?](http://programmers.stackexchange.com/a/181186)
+* [REST vs JSON-RPC](http://stackoverflow.com/questions/15056878/rest-vs-json-rpc)
+* [Debunking the myths of RPC and REST](https://web.archive.org/web/20170608193645/http://etherealbits.com/2012/12/debunking-the-myths-of-rpc-rest/)
+* [What are the drawbacks of using REST](https://www.quora.com/What-are-the-drawbacks-of-using-RESTful-APIs)
+* [Crack the system design interview](http://www.puncsky.com/blog/2016-02-13-crack-the-system-design-interview)
+* [Thrift](https://code.facebook.com/posts/1468950976659943/)
+* [Why REST for internal use and not RPC](http://arstechnica.com/civis/viewtopic.php?t=1190508)

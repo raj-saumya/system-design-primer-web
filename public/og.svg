@@ -1,0 +1,55 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1200"
+    height="630"
+    viewBox="0 0 1200 630"
+>
+  <defs>
+    <pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="6" y2="0" stroke="#ffffff" stroke-width="2" />
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#0c0c0d" />
+
+  <!-- stacked-disk mark -->
+  <g
+        transform="translate(96,150) scale(2.1)"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="3.2"
+        stroke-linejoin="round"
+    >
+    <path d="M3 24 L3 17 M61 24 L61 17" />
+    <polygon points="32,12.5 61,24 32,35.5 3,24" />
+    <path d="M3 17 L3 10 M61 17 L61 10" />
+    <polygon points="32,5.5 61,17 32,28.5 3,17" />
+    <polygon points="32,-1.5 61,10 32,21.5 3,10" fill="url(#h)" />
+  </g>
+
+  <text
+        x="96"
+        y="390"
+        fill="#ffffff"
+        font-family="Inter, Arial, sans-serif"
+        font-weight="800"
+        font-size="86"
+        letter-spacing="-2"
+    >System Design Primer</text>
+  <text
+        x="98"
+        y="452"
+        fill="#a6a6a6"
+        font-family="Inter, Arial, sans-serif"
+        font-weight="500"
+        font-size="34"
+    >A clean web edition for quick reading</text>
+  <text
+        x="98"
+        y="560"
+        fill="#6f6f72"
+        font-family="Inter, Arial, sans-serif"
+        font-weight="600"
+        font-size="26"
+        letter-spacing="3"
+    >SCALABILITY · DATABASES · CACHING · NETWORKING · API</text>
+</svg>

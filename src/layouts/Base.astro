@@ -1,0 +1,159 @@
+---
+import "../styles/global.css";
+import Logo from "../components/Logo.astro";
+
+export type Props = {
+    title: string;
+    description: string;
+    ogType?: "website" | "article";
+    jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+};
+
+const { title, description, ogType = "website", jsonLd } = Astro.props;
+const siteName = "Primer";
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og.svg", Astro.site).href;
+const fullTitle =
+    title === siteName ? "System Design Primer" : `${title} · ${siteName}`;
+const structuredData = jsonLd
+    ? Array.isArray(jsonLd)
+        ? jsonLd
+        : [jsonLd]
+    : [];
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{fullTitle}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta
+            name="robots"
+            content="index, follow, max-image-preview:large, max-snippet:-1"
+        />
+        <meta name="author" content="Donne Martin" />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="theme-color" content="#0c0c0d" />
+        <meta name="color-scheme" content="dark" />
+
+        <meta property="og:type" content={ogType} />
+        <meta property="og:title" content={fullTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+            property="og:image:alt"
+            content="System Design Primer, a web reading edition"
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={fullTitle} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+        />
+        {
+            structuredData.map((entry) => (
+                <script
+                    type="application/ld+json"
+                    set:html={JSON.stringify(entry)}
+                />
+            ))
+        }
+        <slot name="head" />
+    </head>
+    <body>
+        <header class="site-header">
+            <Logo />
+            <nav>
+                <a href="/scalability/">Concepts</a>
+                <a href="/exercises/">Exercises</a>
+                <a href="/object-oriented-design/">OO Design</a>
+            </nav>
+        </header>
+
+        <main>
+            <slot />
+        </main>
+
+        <footer class="site-footer">
+            <p>
+                A web read of{" "}
+                <a
+                    href="https://github.com/donnemartin/system-design-primer"
+                    rel="noopener noreferrer"
+                    >Donne Martin's System Design Primer</a
+                >.
+            </p>
+        </footer>
+    </body>
+</html>
+
+<style>
+    .site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 1.6rem 1.5rem 1.2rem;
+        border-bottom: 1px solid var(--line);
+    }
+    .site-header nav {
+        display: flex;
+        gap: 1.6rem;
+        font-size: 0.83rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+    .site-header nav a {
+        color: var(--muted);
+    }
+    .site-header nav a:hover {
+        color: var(--text);
+        box-shadow: inset 0 -2px 0 var(--text);
+    }
+    main {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 1rem;
+    }
+    .site-footer {
+        max-width: 1080px;
+        margin: 4rem auto 0;
+        padding: 1.6rem 1.5rem;
+        border-top: 1px solid var(--line);
+        color: var(--faint);
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    .site-footer a {
+        color: var(--muted);
+        box-shadow: inset 0 -1px 0 var(--line-strong);
+    }
+    .site-footer a:hover {
+        color: var(--text);
+    }
+    @media (max-width: 560px) {
+        .site-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+    }
+</style>
